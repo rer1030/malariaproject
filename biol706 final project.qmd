@@ -8,6 +8,7 @@ editor: visual
 ##BIOL706 Final Project: Malaria Atlas Data
 
 This project is for my BIOL706 final.
+I made this change in Github to see if pulling worked.
 
 ```{r}
 
