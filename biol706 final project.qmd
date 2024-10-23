@@ -1,0 +1,12 @@
+---
+title: "biol706 final project"
+author: "Reilly Richardson"
+format: html
+editor: visual
+---
+
+##BIOL706 Final Project: Malaria Atlas Data
+```{r}
+
+```
+
