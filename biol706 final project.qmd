@@ -6,7 +6,9 @@ editor: visual
 ---
 
 ##BIOL706 Final Project: Malaria Atlas Data
+
+This project is for my BIOL706 final.
+
 ```{r}
 
 ```
-
