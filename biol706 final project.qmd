@@ -5,11 +5,64 @@ format: html
 editor: visual
 ---
 
-##BIOL706 Final Project: Malaria Atlas Data
+## BIOL706 Final Project: Malaria Atlas Data
 
-This project is for my BIOL706 final.
-I made this change in Github to see if pulling worked.
+This project is for my BIOL706 final. I made this change in Github to see if pulling worked.
 
 ```{r}
+
+library(tidyverse)
+library(RColorBrewer)
+library(malariaAtlas)
+
+#retrieve data from Africa for both species of plasmodium (separately) from Malaria Atlas 
+Africa_pvpr_data_pf <- getPR(continent = "Africa", species = "pf") 
+Africa_pvpr_data_pv <- getPR(continent = "Africa", species = "pv")
+
+```
+
+```{r}
+autoplot(Africa_pvpr_data_pf)
+autoplot(Africa_pvpr_data_pv)
+#quickly autoplot most recent version of parasite rate data for each species in africa
+```
+
+```{r}
+
+library(forcats)
+
+#pr = positive/examined
+
+PF_Africa_table <- Africa_pvpr_data_pf %>% 
+  drop_na(pr) %>% #have to drop na pr data
+  group_by(country) %>% 
+  summarize(mean_pr = mean(pr))
+
+PV_Africa_table <- Africa_pvpr_data_pv %>% 
+  drop_na(pr) %>% #have to drop na pr data
+  group_by(country) %>% 
+  summarize(mean_pr = mean(pr))
+
+  
+ggplot(data = PV_Africa_table, mapping = aes(x=fct_reorder(country, mean_pr), y = mean_pr, fill = mean_pr)) +
+  geom_bar(stat="identity") +
+  scale_x_discrete(labels = function(x) str_wrap(x, width = 18)) + #wrap label text
+  theme(text = element_text(size = 10),
+  axis.text.x = element_text(angle = 90, hjust = 1)) + 
+  labs (title = 'Positivity rate for infection with Plasmodium vivax across Africa', 
+        subtitle = 'data averaged from 1985-2020',
+        x = 'country', 
+        y = 'mean positvity rate')
+
+ggplot(data = PF_Africa_table, mapping = aes(x=fct_reorder(country, mean_pr), y = mean_pr, fill = mean_pr)) +
+  geom_bar(stat="identity") +
+  scale_x_discrete(labels = function(x) str_wrap(x, width = 35)) + #wrap label text
+  theme(text = element_text(size = 10),
+  axis.text.x = element_text(angle = 90, hjust = 1)) + 
+  labs (title = 'Positivity rate for infection with Plasmodium falciparum across Africa', 
+        subtitle = 'data averaged from 1985-2020',
+        x = 'country', 
+        y = 'mean positvity rate')
+
 
 ```
