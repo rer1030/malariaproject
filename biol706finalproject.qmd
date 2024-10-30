@@ -73,10 +73,10 @@ ggplot(data = PF_Africa_table, mapping = aes(x=fct_reorder(country, mean_pr), y 
 ```
 
 # Burkina Faso
+
 ```{r echo = FALSE}
 bf_vec <- getVecOcc(ISO="BFA") #get vector occurence data if I want to use later?
 ```
-
 
 Highest pr between both was P. falciparum in Burkina Faso Look at rural vs urban? Look at pos rates over time RDT is a malaria diagnostic test Have to exclude DHS data - mention in methods, not open access
 
@@ -122,7 +122,7 @@ autoplot(pf_burkina_faso)
 
 ## rural vs urban
 
-could I do an anova here? 
+could I do an anova here?
 
 ```{r echo = FALSE}
 
@@ -189,5 +189,3 @@ ggplot(data = PF_global_table, mapping = aes(x=fct_reorder(country, mean_pr), y 
         y = 'mean positivity rate')
 
 ```
-
-
