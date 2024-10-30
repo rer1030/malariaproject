@@ -9,6 +9,8 @@ editor: visual
 
 This project is for my BIOL706 final. I made this change in Github to see if pulling worked.
 
+## Africa
+
 ```{r}
 
 library(tidyverse)
