@@ -23,13 +23,13 @@ Africa_pvpr_data_pv <- getPR(continent = "Africa", species = "pv")
 
 ```
 
-```{r}
+```{r echo = FALSE}
 autoplot(Africa_pvpr_data_pf)
 autoplot(Africa_pvpr_data_pv)
 #quickly autoplot most recent version of parasite rate data for each species in africa
 ```
 
-```{r}
+```{r echo = FALSE}
 
 library(forcats)
 
@@ -73,24 +73,24 @@ ggplot(data = PF_Africa_table, mapping = aes(x=fct_reorder(country, mean_pr), y 
 ```
 
 # Burkina Faso
-```{r}
-bf_vec <- getVecOcc(ISO="BFA") #get vector occurence data if I want
+```{r echo = FALSE}
+bf_vec <- getVecOcc(ISO="BFA") #get vector occurence data if I want to use later?
 ```
 
 
 Highest pr between both was P. falciparum in Burkina Faso Look at rural vs urban? Look at pos rates over time RDT is a malaria diagnostic test Have to exclude DHS data - mention in methods, not open access
 
-```{r}
+```{r echo = FALSE}
 pf_burkina_faso <- getPR(country = "Burkina Faso", species = "pf")
 ```
 
-```{r}
+```{r echo = FALSE}
 pf_burkina_faso <- getPR(country = "Burkina Faso", species = "pf")
 ```
 
 ## positivity rate and total number of positives from 2010-2017
 
-```{r}
+```{r echo = FALSE}
 PF_BF_table_pr <- pf_burkina_faso %>% 
   drop_na(pr) %>% #have to drop na pr data
   filter(year_start>2009) %>% 
@@ -124,7 +124,7 @@ autoplot(pf_burkina_faso)
 
 could I do an anova here? 
 
-```{r}
+```{r echo = FALSE}
 
 rural_urban_bf <- pf_burkina_faso %>% 
   filter(year_start>2009)
@@ -138,18 +138,18 @@ ggplot(data = rural_urban_bf, mapping = aes(x = rural_urban, y = pr, fill = pr))
 
 ## Looking at plasmodium vivax, omitting DHS data and confidential data (would have to request)
 
-```{r}
+```{r echo = FALSE}
 
 global_pv <- getPR(country ="all", species = "pv") 
 global_pf <- getPR(country ="all", species = "pf") 
 
 ```
 
-```{r}
+```{r echo = FALSE}
 autoplot(global_pv)
 ```
 
-```{r}
+```{r echo = FALSE}
 autoplot(global_pf)
 ```
 

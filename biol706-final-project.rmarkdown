@@ -5,11 +5,13 @@ format: html
 editor: visual
 ---
 
+
 # BIOL706 Final Project: Malaria Atlas Data
 
 This project is for my BIOL706 final. I made this change in Github to see if pulling worked.
 
 # Africa
+
 
 ```{r echo=FALSE}
 
@@ -72,14 +74,12 @@ ggplot(data = PF_Africa_table, mapping = aes(x=fct_reorder(country, mean_pr), y 
 
 ```
 
-# Burkina Faso
-```{r}
-bf_vec <- getVecOcc(ISO="BFA") #get vector occurence data if I want
-```
 
+# Burkina Faso
 
 Highest pr between both was P. falciparum in Burkina Faso Look at rural vs urban? Look at pos rates over time RDT is a malaria diagnostic test Have to exclude DHS data - mention in methods, not open access
 
+
 ```{r}
 pf_burkina_faso <- getPR(country = "Burkina Faso", species = "pf")
 ```
@@ -87,8 +87,10 @@ pf_burkina_faso <- getPR(country = "Burkina Faso", species = "pf")
 ```{r}
 pf_burkina_faso <- getPR(country = "Burkina Faso", species = "pf")
 ```
+
 
 ## positivity rate and total number of positives from 2010-2017
+
 
 ```{r}
 PF_BF_table_pr <- pf_burkina_faso %>% 
@@ -114,29 +116,23 @@ ggplot(data = PF_BF_table_total_pos, mapping = aes(x = year_start, y=total_pos))
 
 ```
 
+
 There were only two survey sites in 2017
+
 
 ```{r}
 autoplot(pf_burkina_faso)
 ```
 
-## rural vs urban
-
-could I do an anova here? 
-
 ```{r}
 
-rural_urban_bf <- pf_burkina_faso %>% 
-  filter(year_start>2009)
-
-ggplot(data = rural_urban_bf, mapping = aes(x = rural_urban, y = pr, fill = pr)) + 
-  geom_boxplot()
-  
 ```
+
 
 # Globally
 
 ## Looking at plasmodium vivax, omitting DHS data and confidential data (would have to request)
+
 
 ```{r}
 
@@ -189,5 +185,4 @@ ggplot(data = PF_global_table, mapping = aes(x=fct_reorder(country, mean_pr), y 
         y = 'mean positivity rate')
 
 ```
-
 
