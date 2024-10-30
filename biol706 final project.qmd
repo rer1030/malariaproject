@@ -9,6 +9,8 @@ editor: visual
 
 This project is for my BIOL706 final. I made this change in Github to see if pulling worked.
 
+## Africa
+
 ```{r}
 
 library(tidyverse)
@@ -35,13 +37,17 @@ library(forcats)
 
 PF_Africa_table <- Africa_pvpr_data_pf %>% 
   drop_na(pr) %>% #have to drop na pr data
+  filter(year_start>2009) %>% 
   group_by(country) %>% 
   summarize(mean_pr = mean(pr))
 
+
 PV_Africa_table <- Africa_pvpr_data_pv %>% 
   drop_na(pr) %>% #have to drop na pr data
+  filter(year_start>2009) %>% 
   group_by(country) %>% 
-  summarize(mean_pr = mean(pr))
+  summarize(mean_pr = mean(pr)) %>% 
+  filter(mean_pr>0)
 
   
 ggplot(data = PV_Africa_table, mapping = aes(x=fct_reorder(country, mean_pr), y = mean_pr, fill = mean_pr)) +
@@ -50,9 +56,9 @@ ggplot(data = PV_Africa_table, mapping = aes(x=fct_reorder(country, mean_pr), y 
   theme(text = element_text(size = 10),
   axis.text.x = element_text(angle = 90, hjust = 1)) + 
   labs (title = 'Positivity rate for infection with Plasmodium vivax across Africa', 
-        subtitle = 'data averaged from 1985-2020',
+        subtitle = 'data averaged from 2010-2020',
         x = 'country', 
-        y = 'mean positvity rate')
+        y = 'mean positivity rate')
 
 ggplot(data = PF_Africa_table, mapping = aes(x=fct_reorder(country, mean_pr), y = mean_pr, fill = mean_pr)) +
   geom_bar(stat="identity") +
@@ -60,9 +66,86 @@ ggplot(data = PF_Africa_table, mapping = aes(x=fct_reorder(country, mean_pr), y 
   theme(text = element_text(size = 10),
   axis.text.x = element_text(angle = 90, hjust = 1)) + 
   labs (title = 'Positivity rate for infection with Plasmodium falciparum across Africa', 
-        subtitle = 'data averaged from 1985-2020',
+        subtitle = 'data averaged from 2010-2020',
         x = 'country', 
-        y = 'mean positvity rate')
-
+        y = 'mean positivity rate')
 
 ```
+
+Highest pr between both was P. falciparum in Burkina Faso
+Look at rural vs urban?
+Look at pos rates over time 
+RDT is a malaria diagnostic test
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+## Globally 
+# Looking at falciparum vivax, omitting DHS data and confidential data (would have to request)
+```{r}
+
+global_pv <- getPR(country ="all", species = "pv") 
+global_pf <- getPR(country ="all", species = "pf") 
+
+```
+
+```{r}
+autoplot(global_pv)
+```
+```{r}
+autoplot(global_pf)
+```
+
+```{r}
+PF_global_table <- global_pf %>% 
+  drop_na(pr) %>% #have to drop na pr data
+  filter(year_start>2009) %>% 
+  group_by(country) %>% 
+  summarize(mean_pr = mean(pr)) %>% 
+  filter(mean_pr>0)
+
+
+PV_global_table <- global_pv %>% 
+  drop_na(pr) %>% #have to drop na pr data
+  group_by(country) %>% 
+  summarize(mean_pr = mean(pr)) %>% 
+  filter(mean_pr>0)
+
+ggplot(data = PV_global_table, mapping = aes(x=fct_reorder(country, mean_pr), y = mean_pr, fill = mean_pr)) +
+  geom_bar(stat="identity") +
+  scale_x_discrete(labels = function(x) str_wrap(x, width = 18)) + #wrap label text
+  theme(text = element_text(size = 10),
+  axis.text.x = element_text(angle = 90, hjust = 1)) + 
+  labs (title = 'Positivity rate for infection with Plasmodium vivax', 
+        subtitle = 'data averaged from 2010-2020',
+        x = 'country', 
+        y = 'mean positivity rate')
+
+ggplot(data = PF_global_table, mapping = aes(x=fct_reorder(country, mean_pr), y = mean_pr, fill = mean_pr)) +
+  geom_bar(stat="identity") +
+  scale_x_discrete(labels = function(x) str_wrap(x, width = 35)) + #wrap label text
+  theme(text = element_text(size = 10),
+  axis.text.x = element_text(angle = 90, hjust = 1)) + 
+  labs (title = 'Positivity rate for infection with Plasmodium falciparum', 
+        subtitle = 'data averaged from 2010-2020',
+        x = 'country', 
+        y = 'mean positivity rate')
+
+```
+
