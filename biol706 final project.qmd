@@ -5,13 +5,13 @@ format: html
 editor: visual
 ---
 
-## BIOL706 Final Project: Malaria Atlas Data
+# BIOL706 Final Project: Malaria Atlas Data
 
 This project is for my BIOL706 final. I made this change in Github to see if pulling worked.
 
-## Africa
+# Africa
 
-```{r}
+```{r echo=FALSE}
 
 library(tidyverse)
 library(RColorBrewer)
@@ -72,32 +72,68 @@ ggplot(data = PF_Africa_table, mapping = aes(x=fct_reorder(country, mean_pr), y 
 
 ```
 
-Highest pr between both was P. falciparum in Burkina Faso
-Look at rural vs urban?
-Look at pos rates over time 
-RDT is a malaria diagnostic test
+# Burkina Faso
+
+Highest pr between both was P. falciparum in Burkina Faso Look at rural vs urban? Look at pos rates over time RDT is a malaria diagnostic test Have to exclude DHS data - mention in methods, not open access
+
+```{r}
+pf_burkina_faso <- getPR(country = "Burkina Faso", species = "pf")
+```
+
+```{r}
+pf_burkina_faso <- getPR(country = "Burkina Faso", species = "pf")
+```
+
+## positivity rate and total number of positives from 2010-2017
+
+```{r}
+PF_BF_table_pr <- pf_burkina_faso %>% 
+  drop_na(pr) %>% #have to drop na pr data
+  filter(year_start>2009) %>% 
+  group_by(year_start) %>% 
+  summarize(mean_pr = mean(pr))
+
+PF_BF_table_total_pos <- pf_burkina_faso %>% 
+  drop_na(pr) %>% #have to drop na pr data
+  filter(year_start>2009) %>% 
+  group_by(year_start) %>%
+  summarize(total_pos = sum(positive)) 
+
+ggplot(data = PF_BF_table_pr, mapping = aes(x = year_start, y=mean_pr))+
+  geom_point() + 
+  labs(title = 'Positivity rate for infection with P. falciparum at sites in Burkina Faso, 2010-2017')
+
+ggplot(data = PF_BF_table_total_pos, mapping = aes(x = year_start, y=total_pos))+
+  geom_point() + 
+  labs(title = 'Total positives for infection with P. falciparum at sites in Burkina Faso, 2010-2017')
 
 
+```
 
+There were only two survey sites in 2017
 
+```{r}
+autoplot(pf_burkina_faso)
+```
 
+## rural vs urban
 
+could I do an anova here? 
 
+```{r}
 
+rural_urban_bf <- pf_burkina_faso %>% 
+  filter(year_start>2009)
 
+ggplot(data = rural_urban_bf, mapping = aes(x = rural_urban, y = pr, fill = pr)) + 
+  geom_boxplot()
+  
+```
 
+# Globally
 
+## Looking at plasmodium vivax, omitting DHS data and confidential data (would have to request)
 
-
-
-
-
-
-
-
-
-## Globally 
-# Looking at falciparum vivax, omitting DHS data and confidential data (would have to request)
 ```{r}
 
 global_pv <- getPR(country ="all", species = "pv") 
@@ -108,6 +144,7 @@ global_pf <- getPR(country ="all", species = "pf")
 ```{r}
 autoplot(global_pv)
 ```
+
 ```{r}
 autoplot(global_pf)
 ```
@@ -148,4 +185,3 @@ ggplot(data = PF_global_table, mapping = aes(x=fct_reorder(country, mean_pr), y 
         y = 'mean positivity rate')
 
 ```
-
