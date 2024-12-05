@@ -21,9 +21,9 @@ Malaria is a major cause of morbidity and mortality in the African Region, espec
 
 ## Introduction
 
-Several species of the genus *Plasmodium* serve as the causative agent of malaria, a deadly mosquito-borne disease with a wide distribution. While control efforts have reduced areas of infection risk, to about half the global population, the World Health Organization (WHO) reported 241 million malaria cases in 2020 [@hay2004; @kolawoleMalariaEndemicitySubsaharan2023]. It is considered hyper- or holoendemic in large parts of sub-Saharan Africa, defined as a region with a parasite prevalence of 50% or greater [@snow2005]. Hyperendemic refers to a prevalence greater than 50% for children and 25% for adults, and holoendemic to a greater than 75% prevalence in children [@rattiMalariaTransmissionModel2020].
+Several species of the genus *Plasmodium* serve as the causative agent of malaria, a deadly mosquito-borne disease with a wide distribution. While control efforts have reduced areas of infection risk to about half the global population, the World Health Organization (WHO) reported 241 million malaria cases in 2020 [@hay2004; @kolawoleMalariaEndemicitySubsaharan2023]. It is considered hyper- or holoendemic in large parts of sub-Saharan Africa, defined as a region with a parasite prevalence of 50% or greater [@snow2005]. Hyperendemic refers to a prevalence greater than 50% for children and 25% for adults, and holoendemic to a greater than 75% prevalence in children [@rattiMalariaTransmissionModel2020].
 
-In 2022, WHO estimated that there were 233 million malaria cases and 590,000 deaths in the WHO African region, the vast majority of which were caused by *Plasmodium falciparum*. The majority of these cases were in Nigeria, the Democratic Republic of the Congo, Uganda, and Mozambique [@WorldMalariaReport2023a].In 2019, this list included Nigeria, the Democratic Republic of the Congo, Tanzania, Niger, Mozambique, and Burkina Faso; the former of which will be the focus of this study [@WorldMalariaReport2020]. An increased number of estimated cases in the region since the 2000s highlights the need for surveillance and intervention to decrease the burden of malaria in the area.
+In 2022, WHO estimated that there were 233 million malaria cases and 590,000 deaths in the WHO African region, the vast majority of which were caused by *Plasmodium falciparum*. The majority of these cases were in Nigeria, the Democratic Republic of the Congo, Uganda, and Mozambique [@WorldMalariaReport2023a]. In 2019, this list included Nigeria, the Democratic Republic of the Congo, Tanzania, Niger, Mozambique, and Burkina Faso; the former of which will be the focus of this study [@WorldMalariaReport2020]. An increased number of estimated cases in the region since the 2000s highlights the need for surveillance and intervention to decrease the burden of malaria in the area.
 
 The focus of this analysis is specifically on *Plasmodium falciparum* malaria in Burkina Faso. Malaria cases in the nation accounted for 3.2% of cases and 2.7% of malaria deaths in the African region in 2022. The nation is located in West Africa, and it has had estimated population of about 23 million [@WorldBankOpen2023]. Burkina Faso has a fairly large population living in rural areas, with only about 27% of people living in urban areas as of 2017 [@yameogoGlobalizationUrbanizationDeforestation2021]. This may be significant as malaria is generally considered a rural disease, but as population dynamics change and urbanization increases, especially in Africa, there may be changes in the spread of the parasite [@hayUrbanizationMalariaTransmission2005].
 
@@ -31,7 +31,7 @@ The Malaria Atlas Project (MAP) is a nonprofit organization and WHO Collaboratin
 
 ## Methods
 
-All analyses were completed using R R Statistical Software, v.4.4.2 [@rcoreteamLanguageEnvironmentStatistical2024a]. All code for this analysis can be found at:https://github.com/rer1030/malariaproject. This analysis was limited to open access parasite data retrieved from the Malaria Atlas project using the R package malariaAtlas [@pfefferMalariaAtlasInterfaceGlobal2018]. Confidential data or data points from DHS surveys that required access requests were not included. All analyses were completed using malariaAtlas dataset version 20240 for PR data and version 202403 for shape data used in plotting.
+All analyses were completed using R R Statistical Software, v.4.4.2 [@rcoreteamLanguageEnvironmentStatistical2024a]. All code for this analysis can be found at: <https://github.com/rer1030/malariaproject>. This analysis was limited to open access parasite data retrieved from the Malaria Atlas project using the R package malariaAtlas [@pfefferMalariaAtlasInterfaceGlobal2018]. Confidential data or data points from DHS surveys that required access requests were not included. All analyses were completed using malariaAtlas dataset version 20240 for PR data and version 202403 for shape data used in plotting.
 
 Parasite data for *P. falciparum* malaria on the African continent from the Malaria Atlas Project (MAP) was retrieved using the `getPR` function to retrieve publicly available parasite rate points. To visually observe where the survey locations were between 2010 and 2022 (most recent available data points), the `filter()` function was used to remove survey points outside this date range, and the `autoplot` function was used to create a plot of survey sites including the raw PfPR (*P. falciparum* parasite rate) at each site and its coordinates.
 
@@ -41,7 +41,7 @@ The `geom_bar()` aesthetic in ggplot2 was used to create a bar graph of mean PR 
 
 Data for *P. falciparum* malaria in Burkina Faso only was retrieved in the same method as the Africa data, as was a preliminary plot of the survey locations and raw PfPR. Any NA values for the PR were dropped, as well as any data points prior to 2010. The most recent available data points were from 2021.
 
-To examine the differences in PR over time, a binomial generalized linear model was run using the `glm` function and `family = 'binomial'`. To plot this model a scatter plot was made of year vs PR using the `geom_scatter()` aesthetic in ggplot and the `geom_smooth` aesthetic with `method = 'glm'` and \`method.args = 'binomial'.
+To examine the differences in PR over time, a binomial generalized linear model was run using the `glm` function and `family = 'binomial'`. To plot this model a scatter plot was made of year vs PR using the `geom_scatter()` aesthetic in ggplot and the `geom_smooth` aesthetic with `method = 'glm'` and \``method.args = 'binomial'`.
 
 The same process was used to examine the differences in total positives for *P. falciparum* malaria over time, but using a poisson distribution instead of a binomial.
 
@@ -71,7 +71,7 @@ suppressPackageStartupMessages({
 Africa_pvpr_data_pf <-  suppressMessages((getPR(continent = "Africa", species = "pf", version = '202406')))
 ```
 
-```{r, fig.cap = 'Plot of all survey points available in Africa for *P. falciparum* malaria, 2010-2020.'}
+```{r, fig.cap = 'Plot of all survey points available in Africa for *P. falciparum* malaria, 2010-2022.'}
 
 suppressMessages(Africa_pvpr_data_pf_2010 <- Africa_pvpr_data_pf %>% 
   filter(year_start>2009, year_end<2023))
