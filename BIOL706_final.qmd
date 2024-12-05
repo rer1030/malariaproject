@@ -1,0 +1,247 @@
+---
+title: "Trends in *Plasmodium falciparum* malaria in African nations"
+author: "Reilly Richardson"
+format: pdf
+number.fig: TRUE
+editor: visual
+bibliography: malaria.bib
+knitr:
+  opts_chunk:
+    echo: false       
+    eval: true        
+    include: true     
+    fig.show: 'hold'
+editor_options: 
+  chunk_output_type: inline
+---
+
+## Abstract
+
+Malaria is a major cause of morbidity and mortality in the African Region, especially *Plasmodium falciparum malaria*. As this is a vector borne illness, its prevalence in specific areas is dependent on climate. In this analysis, we used data retrieved from the Malaria Atlas Project to determine that Burkina Faso had the highest *Plasmodium falciparum* parasite rate (PfPR) in the African region from 2010-2022. We also found that PfPR had decreased over time at a higher rate than total positives have decreased over time from 2010-2021 in Burkina Faso, suggesting that testing has become more prevalent as other prevention measures have been put into place. We also found that PfPR was higher in rural areas in comparison to urban areas, which may be due to differences in infrastructure and income levels.
+
+## Introduction
+
+Several species of the genus *Plasmodium* serve as the causative agent of malaria, a deadly mosquito-borne disease with a wide distribution. While control efforts have reduced areas of infection risk, to about half the global population, the World Health Organization (WHO) reported 241 million malaria cases in 2020 [@hay2004; @kolawoleMalariaEndemicitySubsaharan2023]. It is considered hyper- or holoendemic in large parts of sub-Saharan Africa, defined as a region with a parasite prevalence of 50% or greater [@snow2005]. Hyperendemic refers to a prevalence greater than 50% for children and 25% for adults, and holoendemic to a greater than 75% prevalence in children [@rattiMalariaTransmissionModel2020].
+
+In 2022, WHO estimated that there were 233 million malaria cases and 590,000 deaths in the WHO African region, the vast majority of which were caused by *Plasmodium falciparum*. The majority of these cases were in Nigeria, the Democratic Republic of the Congo, Uganda, and Mozambique [@WorldMalariaReport2023a].In 2019, this list included Nigeria, the Democratic Republic of the Congo, Tanzania, Niger, Mozambique, and Burkina Faso; the former of which will be the focus of this study [@WorldMalariaReport2020]. An increased number of estimated cases in the region since the 2000s highlights the need for surveillance and intervention to decrease the burden of malaria in the area.
+
+The focus of this analysis is specifically on *Plasmodium falciparum* malaria in Burkina Faso. Malaria cases in the nation accounted for 3.2% of cases and 2.7% of malaria deaths in the African region in 2022. The nation is located in West Africa, and it has had estimated population of about 23 million [@WorldBankOpen2023]. Burkina Faso has a fairly large population living in rural areas, with only about 27% of people living in urban areas as of 2017 [@yameogoGlobalizationUrbanizationDeforestation2021]. This may be significant as malaria is generally considered a rural disease, but as population dynamics change and urbanization increases, especially in Africa, there may be changes in the spread of the parasite [@hayUrbanizationMalariaTransmission2005].
+
+The Malaria Atlas Project (MAP) is a nonprofit organization and WHO Collaborating Center in Geospatial Modelling that aims to make malaria analyses more representative by providing open access data and estimates [@MalariaAtlasProject]. The project has developed an R package to retrieve parasite rate data for thousands of survey sites globally, from 1985-2022. We use publicly available parasite rate data retrieved from MAP to determine where the PR from these surveys was highest for *Plasmodium falciparum* malaria on the African continent, as well as to examine the changes in PR and the number of surveyed cases over time, and finally to compare incidence between rural and urban areas.
+
+## Methods
+
+All analyses were completed using R R Statistical Software, v.4.4.2 [@rcoreteamLanguageEnvironmentStatistical2024a]. All code for this analysis can be found at:https://github.com/rer1030/malariaproject. This analysis was limited to open access parasite data retrieved from the Malaria Atlas project using the R package malariaAtlas [@pfefferMalariaAtlasInterfaceGlobal2018]. Confidential data or data points from DHS surveys that required access requests were not included. All analyses were completed using malariaAtlas dataset version 20240 for PR data and version 202403 for shape data used in plotting.
+
+Parasite data for *P. falciparum* malaria on the African continent from the Malaria Atlas Project (MAP) was retrieved using the `getPR` function to retrieve publicly available parasite rate points. To visually observe where the survey locations were between 2010 and 2022 (most recent available data points), the `filter()` function was used to remove survey points outside this date range, and the `autoplot` function was used to create a plot of survey sites including the raw PfPR (*P. falciparum* parasite rate) at each site and its coordinates.
+
+To clean the data in order to make plots and run generalized linear models, several tidyverse packages were used. Any NA values for the PR were dropped. The PR is determined based on the proportion of samples in which immature trophozoites can be identified from blood smear, or by rapid diagnostic testing (positive/examined) [@hayMalariaAtlasProject2006]. Sources of each survey are included in the raw PR data. The `filter()` function in dplyr was used to select data points collected starting with the year 2010 and ending in 2022 (most recent available data points), and the `group_by()` and `summarize()` functions were used to summarize the mean PfPR for each country, averaged for all data available from 2010-2022.
+
+The `geom_bar()` aesthetic in ggplot2 was used to create a bar graph of mean PR by country, and the `fct_reorder()` function from the forcats package was used to order the countries from smallest to largest mean PR.
+
+Data for *P. falciparum* malaria in Burkina Faso only was retrieved in the same method as the Africa data, as was a preliminary plot of the survey locations and raw PfPR. Any NA values for the PR were dropped, as well as any data points prior to 2010. The most recent available data points were from 2021.
+
+To examine the differences in PR over time, a binomial generalized linear model was run using the `glm` function and `family = 'binomial'`. To plot this model a scatter plot was made of year vs PR using the `geom_scatter()` aesthetic in ggplot and the `geom_smooth` aesthetic with `method = 'glm'` and \`method.args = 'binomial'.
+
+The same process was used to examine the differences in total positives for *P. falciparum* malaria over time, but using a poisson distribution instead of a binomial.
+
+To examine the differences in PR in rural vs. urban areas of Burkina Faso, the raw data for *P. falciparum* malaria in Burkina Faso was filtered to remove any data points where it was unknown if the survey location was in a rural or urban location, as well as to select data points collected starting with the year 2010 to 2021 (most recent available data). A binomial generalized linear model was run to determine the differences in PR in rural vs. urban locations in Burkina Faso.
+
+The `geom_boxplot()` aesthetic in ggplot2 was then used to create a boxplot of PR in rural and urban locations in Burkina Faso.
+
+To examine the goodness of fit of the models, the `plot` function was used to create qqplots of each glm. To compare the AICs between the PR models, the `AIC` function was used.
+
+## Results
+
+```{r echo=FALSE, results='hide'}
+library(formatR)
+knitr::opts_chunk$set(echo = FALSE, results = 'hide', fig.show = 'hold',  warning = FALSE, message = FALSE )
+
+suppressPackageStartupMessages({
+  library(tidyverse)
+  library(malariaAtlas)
+  library(forcats)
+  library(lme4)
+})
+```
+
+```{r echo=FALSE, results='hide'}
+
+#retrieve data from Africa for Plasmodium falciparum 
+Africa_pvpr_data_pf <-  suppressMessages((getPR(continent = "Africa", species = "pf", version = '202406')))
+```
+
+```{r, fig.cap = 'Plot of all survey points available in Africa for *P. falciparum* malaria, 2010-2020.'}
+
+suppressMessages(Africa_pvpr_data_pf_2010 <- Africa_pvpr_data_pf %>% 
+  filter(year_start>2009, year_end<2023))
+
+suppressMessages(autoplot(Africa_pvpr_data_pf_2010, version = "202403"))
+#autoplot most recent version of parasite rate data for each pf in africa
+
+```
+
+```{r, fig.cap = 'Mean PfPR from 2010-2022 in African countries. Data retrieved from Malaria Atlas Project. Positives were determined from rapid diagnostic testing or microscopy (visual observation of immature trophozoites in blood smear).'}
+
+#pr = positive/examined
+#make tables for figures
+
+PF_Africa_table <- Africa_pvpr_data_pf %>% 
+  drop_na(pr) %>% 
+  filter(year_start>2009, year_end < 2023) %>% 
+  group_by(country) %>% 
+  summarize(mean_pr = mean(pr))
+
+#plot of PF data in Africa
+ggplot(data = PF_Africa_table, mapping = aes(y=fct_reorder(country, mean_pr), x = mean_pr, fill = mean_pr, label = country)) +
+  geom_bar(stat="identity") +
+  theme(text = element_text(size = 8),
+  axis.text.y = element_text( hjust = 1)) + 
+  labs (title = 'Plasmodium falciparum parasite rate in African nations', 
+        subtitle = 'data averaged from 2010-2022',
+        x = 'mean PfPR',
+        y = 'country',
+        fill = 'mean pr')
+
+```
+
+## PfPR across Africa
+
+Mean PR was highest in Burkina Faso, where the mean PR between survey sites for years 2010-2022 was 0.428. Sierra Leone, which is located on the west African coast, had the second highest mean PR at 0.415. Seven of the top ten highest PfPR points in Africa from 2010-2022 were in countries located within the region of West Africa (Burkina Faso, Sierra Leone, South Sudan, Guinea, Benin, Togo, Mali, Liberia, Mozambique, and Uganda. The mean PR was lowest in Swaziland.
+
+### Generalized linear models
+
+```{r}
+#retrieve data from Burkina Faso for Plasmodium falciparum 
+pf_burkina_faso <-  suppressMessages(getPR(country = "Burkina Faso", species = "pf", version =  202406))
+
+```
+
+```{r}
+#Year vs. PfPR
+PF_BF_year_pr <- pf_burkina_faso %>% 
+  drop_na(pr) %>%
+  filter(year_start > 2009, year_start<2022) 
+#filter out years before 2010
+#create binomial model for pr over time
+pf_bf_year_model <- glm(pr~year_start, data = PF_BF_year_pr, family = "binomial")
+summary(pf_bf_year_model)
+#interpret binomial model and create object for inline code
+year_pr <- round(digits = 2, ((exp( -0.1366)/(1+exp( -0.1366))) *100))
+```
+
+```{r fig.show = "hide"}
+#look at residuals
+plot(pf_bf_year_model)
+```
+
+```{r, fig.cap = 'PfPR for years between 2010 and 2021 in Burkina Faso.'}
+
+ggplot(data = PF_BF_year_pr, mapping = aes(x = year_start, y=pr))+
+  geom_point() + 
+  geom_smooth(method = 'glm', method.args='binomial') +
+  labs(title = 'PfPR by year at sites in Burkina Faso, 2010-2021', 
+       y = 'PfPR',
+       x = 'Year') +
+  theme(plot.title = element_text(size = 10))
+  
+```
+
+```{r}
+#Year vs. total pos
+PF_BF_table_total_pos <- pf_burkina_faso %>% 
+  drop_na(positive) %>% 
+  filter(year_start>2009, year_start<2022)
+#create poisson model for total pos over time
+PF_BF_year_total_pos_model <- glm(positive~year_start, data = PF_BF_table_total_pos, family ='poisson') #y,x
+summary(PF_BF_year_total_pos_model)
+#interpret poisson model and create object for inline code
+year_totalpos_glm <- round(digit=2,(1-exp(-0.087186))*100)
+```
+
+```{r fig.show = "hide"}
+plot(PF_BF_year_total_pos_model)
+
+```
+
+```{r, fig.cap = 'Total number of tests positive for *P. falciparum* malaria for years between 2010 and 2021 in Burkina Faso.'}
+ggplot(data = PF_BF_table_total_pos, mapping = aes(x = year_start, y=positive))+
+  geom_point() + 
+  geom_smooth(method='glm', method.args=('poisson')) +
+  labs(title = 'Total positives for infection with P. falciparum at sites in Burkina Faso, 2010-2021',
+       x = 'Year',
+       y ='Total positives') + 
+  theme(plot.title = element_text(size = 8))
+
+```
+
+```{r fig.show = "hide"}
+hist(pf_burkina_faso$pr)
+#data is not normally distributed
+```
+
+```{r}
+#Rural vs urban
+rural_urban <- pf_burkina_faso %>% 
+  filter(year_start>2009, rural_urban!="UNKNOWN")
+#create binomial model for rural/urban vs. PfPr
+rural_urban_pr<- glm(pr~rural_urban, data = rural_urban , family = "binomial")
+summary(rural_urban_pr)
+#interpret binomial model and create object for inline code
+rural_urban_pr_prob <- round(digits = 2,(exp(-1.38453)/(1+exp(-1.38453)))*100)
+```
+
+```{r fig.show = "hide"}
+#plot residuals
+plot(rural_urban_pr)
+```
+
+```{r}
+rural_urban_pr_prob <- round(digits = 2,(exp(-1.38453)/(1+exp(-1.38453)))*100)
+```
+
+```{r, fig.cap = 'PfPR at urban and rural sites in Burkina Faso from years 2010-2021.'}
+
+ggplot(data = rural_urban, mapping = aes(x = rural_urban, y=pr))+
+  geom_boxplot() + 
+  geom_smooth(method = 'glm', method.args='binomial') +
+  labs(title = 'PfPR at urban vs rural sites in Burkina Faso', 
+       y = 'PfPR',
+       x = 'Rural/urban classification') +
+  theme(plot.title = element_text(size = 10))
+
+```
+
+```{r}
+(AIC(pf_bf_year_model, PF_BF_year_total_pos_model, rural_urban_pr))
+```
+
+Three generalized linear models were built to explain the effects of year and urbanization on PR and total number of positives for *P. falciparum* malaria in Burkina Faso. Based on the binomial regression which explained the PR based on year, for every year increase, the probability of a positive test result decreased by `r year_pr`% (p\<2e-16)(Figure 3). Based on the poisson regression which explained the total number of positives based on year, for every year increase, the number of positive test results for *P.falciparum* malaria decreased by `r year_totalpos_glm`% (p\<2e-16) (Figure 4). Based on the model which explained the PR based on rural or urban classification, in an urban area of Burkina Faso, the probability of a positive test result for *P. falciparum* malaria decreases by `r rural_urban_pr_prob`% (p\<2e-16) as compared to a rural area (Figure 5).
+
+The AIC for the poisson glm explaining total positives based on year had the highest AIC value of the models. The binomial glm explaining PR based on year had the lowest AIC value, meaning it is the best fitting model.
+
+## Discussion
+
+### PfPR is highest primarily in West African nations
+
+Mean PR was generally highest in West Africa, suggesting an increased susceptibility of West African nations to *P. falciparum* malaria. Climate is one aspect which influences malaria transmission, including but not limited to high temperatures which increase transmission during wet years by increasing the speed fo the vector life cycle; as well as humidity, which influences vector survival [@dioufClimateVariabilityMalaria2020]. A study of malaria transmission and climate in West Afrrica found that climate change has the potential to shift malaria prevalence into the southern region of west Africa, with a gradually decrease in malaria prevalence due to climate change in other regions of West Africa [@dioufImpactFutureClimate2022].
+
+Climate change has the potential to change vector range and behavior, and so it is especially crucial to develop robust surveillance and prevention systems in order to minimize burden, especially as prevalence increases in regions that may not be suitably prepared to take prevention measures, distribution of malaria vaccines will be an especially important prevention method, as the WHO released its first recommendation for a vaccine for children living in regions to high transmission in 2021 [@cdcMalariaVaccines2024].
+
+It is important to consider the limitations of malaria testing data. A 2013 study in Ghana [@stolerDeconstructingMalariaWest2014] found that less than a third of malaria diagnoses was confirmed via blood diagnosis, which can often be a challenge with inaccurate diagnoses in high risk malaria areas. Often this can result in false positives; however, considering that the MAP dataset only includes cases confirmed by rapid diagnostic testing or blood testing, it is very likely that there is a higher number of malaria in these countries than reported here.
+
+### PR and total positives have decreased over time in Burkina Faso
+
+Considering that PR is decreasing at a much higher rate than the total number of positives, it is possible that more frequent testing for malaria has been implemented in Burkina Faso. A decrease in the PR which is higher than the number of positives implies that the number of people being examined is also increasing over time. Possible reasons for this may be the implementation of a seasonal malaria chemoprevention distribution program in 2014, though a 2014 to 2015 study found that less than one third of eligible children in the one of the seven pilot health districts for the program received the recommended number of doses [@compaoreEvaluationImplementationFidelity2017]. New prevention measures are continuing to be introduced with the potential to decrease infections, such as an initial vaccine roll out in the nation which occurred in early 2024 [@amaniIntroductionRolloutMalaria2024].
+
+### Differences in malaria burden between rural and urban areas
+
+We determined that there is a modestly higher PR in rural areas of Burkina Faso as compared to urban areas. It has been suggested that increased urbanization in Africa will result in a decrease in malaria transmission. In Ouagadougou, the capital city of Burkina Faso, neighboring rural areas had a PfPR more than triple that of the center of the city, likely attributable to lower housing quality which creates breeding sites and less protection against bites [@silvaFactorsContributingUrban2012].
+
+### Limitations of MAP dataset
+
+Differences in availability of malaria data can make it difficult to compare PRs between nations and geographical areas, highlighting the need for robust, open access data. The Malaria Atlas Project is a useful source of data for malaria epidemiologists, especially as the largest currently available database, but confidentiality of some data points and additional access requests needed for other survey points can skew analyses, which may be detrimental when determining what areas most need resources for prevention.
+
+The goal of the Malaria Atlas Project is to obtain a more complete picture of global malaria data; however, only a limited amount of the data which the MAP database contains is available through their R package or as .csv files available for download. Obtaining a more complete picture of global malaria burden will become increasingly important, as in 2022, the number of estimated malaria cases across the globe exceeded pre-pandemic levels [@venkatesan2023WHOWorld2024].
+
+## References
